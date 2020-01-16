@@ -1,10 +1,11 @@
-import  tensorflow as tf
-import  numpy as np
-from    tensorflow import keras
-import  os
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
+from tensorflow.keras import layers, datasets
+import os
 
 
-class Regressor(keras.layers.Layer):
+class Regressor(layers.Layer):
 
     def __init__(self):
         super(Regressor, self).__init__()
@@ -20,22 +21,19 @@ class Regressor(keras.layers.Layer):
         print(type(self.w), tf.is_tensor(self.w), self.w.name)
         print(type(self.b), tf.is_tensor(self.b), self.b.name)
 
-
     def call(self, x):
-
         x = tf.matmul(x, self.w) + self.b
 
         return x
 
-def main():
 
+def main():
     tf.random.set_seed(22)
     np.random.seed(22)
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
     assert tf.__version__.startswith('2.')
 
-
-    (x_train, y_train), (x_val, y_val) = keras.datasets.boston_housing.load_data()
+    (x_train, y_train), (x_val, y_val) = datasets.boston_housing.load_data()
     #
     x_train, x_val = x_train.astype(np.float32), x_val.astype(np.float32)
     # (404, 13) (404,) (102, 13) (102,)
@@ -46,7 +44,6 @@ def main():
     db_train = tf.data.Dataset.from_tensor_slices((x_train, y_train)).batch(64)
     db_val = tf.data.Dataset.from_tensor_slices((x_val, y_val)).batch(102)
 
-
     model = Regressor()
     criteon = keras.losses.MeanSquaredError()
     optimizer = keras.optimizers.Adam(learning_rate=1e-2)
@@ -54,7 +51,6 @@ def main():
     for epoch in range(200):
 
         for step, (x, y) in enumerate(db_train):
-
             with tf.GradientTape() as tape:
                 # [b, 1]
                 logits = model(x)
@@ -68,7 +64,6 @@ def main():
 
         print(epoch, 'loss:', loss.numpy())
 
-
         if epoch % 10 == 0:
 
             for x, y in db_val:
@@ -80,9 +75,6 @@ def main():
                 loss = criteon(y, logits)
 
                 print(epoch, 'val loss:', loss.numpy())
-
-
-
 
 
 if __name__ == '__main__':

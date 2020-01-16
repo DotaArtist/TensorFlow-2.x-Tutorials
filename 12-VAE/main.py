@@ -1,23 +1,17 @@
-import  os
-import  tensorflow as tf
-import  numpy as np
-from    tensorflow import keras
-from    PIL import Image
-from    matplotlib import pyplot as plt
-
+import os
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
+from PIL import Image
+from matplotlib import pyplot as plt
 
 tf.random.set_seed(22)
 np.random.seed(22)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 assert tf.__version__.startswith('2.')
 
-
-
-
 (x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
-x_train, x_test = x_train.astype(np.float32)/255., x_test.astype(np.float32)/255.
-
-
+x_train, x_test = x_train.astype(np.float32) / 255., x_test.astype(np.float32) / 255.
 
 # In[19]:
 
@@ -25,11 +19,10 @@ x_train, x_test = x_train.astype(np.float32)/255., x_test.astype(np.float32)/255
 print(x_train.shape, y_train.shape)
 print(x_test.shape, y_test.shape)
 
-
 # image grid
 new_im = Image.new('L', (280, 280))
 
-image_size = 28*28
+image_size = 28 * 28
 h_dim = 512
 z_dim = 20
 num_epochs = 55
@@ -132,14 +125,11 @@ for epoch in range(num_epochs):
             print("Epoch[{}/{}], Step [{}/{}], Reconst Loss: {:.4f}, KL Div: {:.4f}"
                   .format(epoch + 1, num_epochs, step + 1, num_batches, float(reconstruction_loss), float(kl_div)))
 
-
-
     # Generative model
     z = tf.random.normal((batch_size, z_dim))
     out = model.decode(z)  # decode with sigmoid
     out = tf.reshape(out, [-1, 28, 28]).numpy() * 255
     out = out.astype(np.uint8)
-
 
     # since we can not find image_grid function from vesion 2.0
     # we do it by hand.
@@ -177,5 +167,3 @@ for epoch in range(num_epochs):
     plt.imshow(np.asarray(new_im))
     plt.show()
     print('New images saved !')
-
-

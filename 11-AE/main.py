@@ -1,23 +1,17 @@
-import  os
-import  tensorflow as tf
-import  numpy as np
-from    tensorflow import keras
-from    PIL import Image
-from    matplotlib import pyplot as plt
-
+import os
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
+from PIL import Image
+from matplotlib import pyplot as plt
 
 tf.random.set_seed(22)
 np.random.seed(22)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 assert tf.__version__.startswith('2.')
 
-
-
-
 (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 x_train, x_test = x_train.astype(np.float32) / 255., x_test.astype(np.float32) / 255.
-
-
 
 # In[19]:
 
@@ -25,11 +19,10 @@ x_train, x_test = x_train.astype(np.float32) / 255., x_test.astype(np.float32) /
 print(x_train.shape, y_train.shape)
 print(x_test.shape, y_test.shape)
 
-
 # image grid
 new_im = Image.new('L', (280, 280))
 
-image_size = 28*28
+image_size = 28 * 28
 h_dim = 20
 num_epochs = 55
 batch_size = 100
@@ -55,8 +48,6 @@ class AE(tf.keras.Model):
         x = tf.nn.relu(self.fc1(x))
         x = (self.fc2(x))
         return x
-
-
 
     def decode_logits(self, h):
         x = tf.nn.relu(self.fc3(h))
@@ -104,17 +95,15 @@ for epoch in range(num_epochs):
             reconstruction_loss = tf.nn.sigmoid_cross_entropy_with_logits(labels=x, logits=x_reconstruction_logits)
             reconstruction_loss = tf.reduce_sum(reconstruction_loss) / batch_size
 
-        gradients = tape.gradient(reconstruction_loss, model.trainable_variables) 
-        gradients,_ = tf.clip_by_global_norm(gradients, 15)
+        gradients = tape.gradient(reconstruction_loss, model.trainable_variables)
+        gradients, _ = tf.clip_by_global_norm(gradients, 15)
         optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
         if (step + 1) % 50 == 0:
             print("Epoch[{}/{}], Step [{}/{}], Reconst Loss: {:.4f}"
                   .format(epoch + 1, num_epochs, step + 1, num_batches, float(reconstruction_loss)))
 
-
-
-     # Save the reconstructed images of last batch
+    # Save the reconstructed images of last batch
     out_logits = model(x[:batch_size // 2])
     out = tf.nn.sigmoid(out_logits)  # out is just the logits, use sigmoid
     out = tf.reshape(out, [-1, 28, 28]).numpy() * 255
@@ -136,5 +125,3 @@ for epoch in range(num_epochs):
     plt.imshow(np.asarray(new_im))
     plt.show()
     print('New images saved !')
-
-

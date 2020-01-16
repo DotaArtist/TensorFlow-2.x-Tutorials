@@ -6,7 +6,6 @@ from keras_position_wise_feed_forward import FeedForward
 from keras_pos_embd import TrigPosEmbedding
 from keras_embed_sim import EmbeddingRet, EmbeddingSim
 
-
 __all__ = [
     'get_custom_objects', 'get_encoders', 'get_decoders', 'get_model', 'decode',
     'attention_builder', 'feed_forward_builder', 'get_encoder_component', 'get_decoder_component',
