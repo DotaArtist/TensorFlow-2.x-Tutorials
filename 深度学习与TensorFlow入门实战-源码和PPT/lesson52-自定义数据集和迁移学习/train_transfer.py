@@ -43,21 +43,20 @@ def preprocess(x,y):
 
 
 batchsz = 128
-
-# creat train db
+# 创建训练集Datset对象
 images, labels, table = load_pokemon('pokemon',mode='train')
 db_train = tf.data.Dataset.from_tensor_slices((images, labels))
 db_train = db_train.shuffle(1000).map(preprocess).batch(batchsz)
-# crate validation db
+# 创建验证集Datset对象
 images2, labels2, table = load_pokemon('pokemon',mode='val')
 db_val = tf.data.Dataset.from_tensor_slices((images2, labels2))
 db_val = db_val.map(preprocess).batch(batchsz)
-# create test db
+# 创建测试集Datset对象
 images3, labels3, table = load_pokemon('pokemon',mode='test')
 db_test = tf.data.Dataset.from_tensor_slices((images3, labels3))
 db_test = db_test.map(preprocess).batch(batchsz)
 
-
+# 
 net = keras.applications.VGG19(weights='imagenet', include_top=False,
                                pooling='max')
 net.trainable = False
