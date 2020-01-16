@@ -40,6 +40,23 @@ model.add(layers.Flatten())
 model.add(layers.Dense(64, activation='relu'))
 model.add(layers.Dense(10, activation='softmax'))
 
+
+# 自定义loss
+# 方法1
+# def losses(labels: list, preds: list):
+#     l = 0
+#     for i in range(len(labels)):
+#         l += tf.reduce_sum(((labels[i] - preds[i]) ** 2) * (i + 1))
+#     return l
+# model.add_loss(losses([label_1, label_2], [pred_1, pred_2]))
+# model.compile('adam')
+
+# 方法2
+
+# def custom_loss(y_true, y_pred):
+#     return tf.reduce_mean(tf.square(y_true - y_pred))
+# model.compile(loss=custom_loss)
+
 model.summary()
 
 model.compile(optimizer='adam',
